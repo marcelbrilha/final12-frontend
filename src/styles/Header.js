@@ -59,5 +59,6 @@ export default makeStyles({
   btnRegister: {
     width: "200px",
     height: "80px",
+    backgroundColor: "#ff3366 !important",
   },
 });

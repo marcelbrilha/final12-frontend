@@ -7,11 +7,6 @@ export default makeStyles({
     flexDirection: "column",
     alignItems: "center",
   },
-  heading: {
-    color: "#333",
-    fontSize: "42px",
-    margin: "10px 0 30px 0",
-  },
   form: {
     display: "flex",
     flexDirection: "column",
@@ -24,6 +19,7 @@ export default makeStyles({
     },
   },
   button: {
+    backgroundColor: "#ff3366 !important",
     height: "60px",
   },
 });

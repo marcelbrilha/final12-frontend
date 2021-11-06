@@ -1,5 +1,6 @@
 import { TextField, Button } from "@material-ui/core";
 
+import Heading from "./Heading";
 import Style from "../styles/Login";
 
 function Login() {
@@ -7,7 +8,7 @@ function Login() {
 
   return (
     <section className={classes.content}>
-      <h2 className={classes.heading}>ENTRAR</h2>
+      <Heading title="ENTRAR" />
 
       <form className={classes.form}>
         <TextField label="Usuário" variant="outlined" />
@@ -18,7 +19,7 @@ function Login() {
           color="secondary"
           className={classes.button}
         >
-          ENTRAR
+          ACESSAR
         </Button>
       </form>
     </section>
