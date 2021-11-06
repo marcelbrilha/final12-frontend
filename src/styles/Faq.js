@@ -6,6 +6,11 @@ export default makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:700px)"]: {
+      padding: "0",
+    },
   },
   accordion: {
     width: "100%",

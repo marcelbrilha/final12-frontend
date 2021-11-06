@@ -57,6 +57,20 @@ function Faq() {
           </Typography>
         </AccordionDetails>
       </Accordion>
+
+      <Accordion className={classes.accordion}>
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography className={classes.title}>
+            O que é data de liquidação?
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            A data de liquidação é o dia em que o dinheiro será debitado da sua
+            conta para pagar pelas subscrições.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
     </section>
   );
 }
