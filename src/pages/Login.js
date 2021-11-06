@@ -1,15 +1,15 @@
 import Header from "../components/Header";
-import Main from "../components/Main";
+import Content from "../components/Login";
 import Footer from "../components/Footer";
 
-function Home() {
+function Login() {
   return (
     <>
-      <Header />
-      <Main />
+      <Header isRegister={false} />
+      <Content />
       <Footer />
     </>
   );
 }
 
-export default Home;
+export default Login;

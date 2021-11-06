@@ -2,7 +2,7 @@ import Button from "@material-ui/core/Button";
 
 import Style from "../styles/Header";
 
-function Header() {
+function Header({ isRegister = true }) {
   const classes = Style();
 
   return (
@@ -13,24 +13,26 @@ function Header() {
         </h1>
       </header>
 
-      <section className={classes.register}>
-        <div className={classes.contentRegister}>
-          <h2 className={classes.heading}>TUDO SOBRE SUBSCRIÇÕES</h2>
+      {isRegister && (
+        <section className={classes.register}>
+          <div className={classes.contentRegister}>
+            <h2 className={classes.heading}>TUDO SOBRE SUBSCRIÇÕES</h2>
 
-          <p className={classes.message}>
-            Selecione os fundos que você deseja ser notificado e fique
-            tranquilo!
-          </p>
+            <p className={classes.message}>
+              Selecione os fundos que você deseja ser notificado e fique
+              tranquilo!
+            </p>
 
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.btnRegister}
-          >
-            CADASTRAR
-          </Button>
-        </div>
-      </section>
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.btnRegister}
+            >
+              CADASTRAR
+            </Button>
+          </div>
+        </section>
+      )}
     </>
   );
 }
