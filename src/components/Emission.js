@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { KeyboardArrowUp, KeyboardArrowDown } from "@material-ui/icons";
+import { KeyboardArrowUp, KeyboardArrowDown, Search } from "@material-ui/icons";
 import {
   TableRow,
   TableCell,
@@ -9,6 +9,8 @@ import {
   TableHead,
   IconButton,
   Collapse,
+  Box,
+  TextField,
 } from "@material-ui/core";
 
 import Style from "../styles/Emission";
@@ -98,6 +100,11 @@ function Emission() {
 
   return (
     <>
+      <Box className={classes.containerSearch}>
+        <TextField label="Pesquisar Fundo" variant="standard" />
+        <Search className={classes.iconSearch} />
+      </Box>
+
       <TableContainer>
         <Table>
           <TableHead>

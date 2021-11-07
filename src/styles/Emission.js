@@ -9,4 +9,14 @@ export default makeStyles({
     color: "#fff !important",
     fontSize: "15px !important",
   },
+  containerSearch: {
+    display: "flex",
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    marginBottom: "10px",
+  },
+  iconSearch: {
+    marginLeft: "10px",
+    cursor: "pointer",
+  },
 });
