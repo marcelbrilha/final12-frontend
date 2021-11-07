@@ -3,6 +3,7 @@ import { Tabs, Tab } from "@material-ui/core";
 import { PostAdd, FindInPage } from "@material-ui/icons";
 
 import Style from "../styles/Subscription";
+import Emission from "./Emission";
 
 function TabPanel({ children, value, index, classes, ...other }) {
   return (
@@ -37,11 +38,11 @@ function Subscription() {
       </Tabs>
 
       <TabPanel value={value} classes={classes} index="one">
-        Emissões
+        <Emission />
       </TabPanel>
 
       <TabPanel value={value} classes={classes} index="two">
-        Histórico
+        <Emission />
       </TabPanel>
     </section>
   );
