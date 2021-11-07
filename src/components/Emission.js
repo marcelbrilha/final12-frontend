@@ -11,6 +11,7 @@ import {
   Collapse,
   Box,
   TextField,
+  Tooltip,
 } from "@material-ui/core";
 
 import Style from "../styles/Emission";
@@ -102,7 +103,10 @@ function Emission() {
     <>
       <Box className={classes.containerSearch}>
         <TextField label="Pesquisar Fundo" variant="standard" />
-        <Search className={classes.iconSearch} />
+
+        <Tooltip title="Pesquisar Fundo">
+          <Search className={classes.iconSearch} />
+        </Tooltip>
       </Box>
 
       <TableContainer>
