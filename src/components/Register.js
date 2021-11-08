@@ -69,8 +69,16 @@ function Register({ open, handleOpenClose }) {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={() => handleOpenClose(false)}>Cancelar</Button>
-        <Button color="secondary">Inscrever</Button>
+        <Button
+          className={classes.btnCancel}
+          onClick={() => handleOpenClose(false)}
+        >
+          Cancelar
+        </Button>
+
+        <Button color="secondary" variant="contained">
+          Inscrever
+        </Button>
       </DialogActions>
     </Dialog>
   );

@@ -11,4 +11,7 @@ export default makeStyles({
     width: "100%",
     marginBottom: "20px !important",
   },
+  btnCancel: {
+    color: "#333 !important",
+  },
 });
