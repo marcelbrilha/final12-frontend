@@ -1,5 +1,6 @@
 import { useState } from "react";
-import Button from "@material-ui/core/Button";
+import { Button, Tooltip, Menu, MenuItem } from "@material-ui/core";
+import { AccountCircle } from "@material-ui/icons";
 
 import Register from "./Register";
 import Style from "../styles/Header";
@@ -7,6 +8,17 @@ import Style from "../styles/Header";
 function Header({ isRegister = true }) {
   const classes = Style();
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const openMenu = Boolean(anchorEl);
+
+  function handleMenu(event) {
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleClose() {
+    setAnchorEl(null);
+  }
 
   function handleOpenCloseRegister(openClose) {
     setOpen(openClose);
@@ -20,6 +32,14 @@ function Header({ isRegister = true }) {
         <h1 className={classes.logo}>
           FINAL<span className={classes.detail}>12</span>
         </h1>
+
+        <Tooltip title="Administrador">
+          <AccountCircle className={classes.btnPerson} onClick={handleMenu} />
+        </Tooltip>
+
+        <Menu anchorEl={anchorEl} open={openMenu} onClose={handleClose}>
+          <MenuItem onClick={handleClose}>Sair</MenuItem>
+        </Menu>
       </header>
 
       {isRegister && (

@@ -12,6 +12,12 @@ export default makeStyles({
     justifyContent: "center",
     fontSize: "14px",
   },
+  btnPerson: {
+    position: "absolute",
+    right: "10px",
+    color: "#fff",
+    cursor: "pointer",
+  },
   logo: {
     color: "#FFF",
   },

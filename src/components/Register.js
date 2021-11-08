@@ -39,7 +39,7 @@ function Register({ open, handleOpenClose }) {
 
   return (
     <Dialog open={open}>
-      <DialogTitle className={classes.title}>NOTIFICAR INVESTIDOR</DialogTitle>
+      <DialogTitle className={classes.title}>NOTIFICAÇÕES</DialogTitle>
 
       <DialogContent>
         <DialogContentText className={classes.message}>
