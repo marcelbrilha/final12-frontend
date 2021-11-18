@@ -1,4 +1,4 @@
-import { Edit, Delete, AddCircle } from "@material-ui/icons";
+import { Edit, Delete, AddCircle, Search } from "@material-ui/icons";
 import {
   TableRow,
   TableCell,
@@ -9,6 +9,7 @@ import {
   IconButton,
   Tooltip,
   Box,
+  TextField,
 } from "@material-ui/core";
 
 import Header from "../components/Header";
@@ -21,16 +22,26 @@ function Administrative() {
 
   return (
     <>
-      <Header isRegister={false} />
+      <Header isRegister={false} logoff={true} />
 
       <section className={classes.content}>
         <Heading title="SUBSCRIÇÕES" />
 
-        <Box className={classes.containerAdd}>
-          <Tooltip title="Criar">
-            <AddCircle className={classes.addButton} />
-          </Tooltip>
-        </Box>
+        <nav className={classes.containerNavigation}>
+          <Box className={classes.containerSearch}>
+            <TextField label="Pesquisar Fundo" variant="standard" />
+
+            <Tooltip title="Pesquisar Fundo">
+              <Search className={classes.iconSearch} />
+            </Tooltip>
+          </Box>
+
+          <Box className={classes.containerAdd}>
+            <Tooltip title="Criar">
+              <AddCircle className={classes.addButton} />
+            </Tooltip>
+          </Box>
+        </nav>
 
         <TableContainer>
           <Table>

@@ -7,17 +7,29 @@ export default makeStyles({
     flexDirection: "column",
     alignItems: "center",
   },
-  containerAdd: {
+  containerNavigation: {
     width: "100%",
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "flex-end",
-    marginBottom: "10px",
+    marginBottom: "25px",
+  },
+  containerAdd: {
+    marginLeft: "20px",
   },
   addButton: {
     cursor: "pointer",
   },
   addRemove: {
     marginLeft: "25px !important",
+  },
+  containerSearch: {
+    display: "flex",
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+  },
+  iconSearch: {
+    marginLeft: "10px",
+    cursor: "pointer",
   },
 });

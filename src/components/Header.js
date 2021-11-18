@@ -5,7 +5,7 @@ import { AccountCircle } from "@material-ui/icons";
 import Register from "./Register";
 import Style from "../styles/Header";
 
-function Header({ isRegister = true }) {
+function Header({ isRegister = true, logoff = false }) {
   const classes = Style();
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -33,13 +33,20 @@ function Header({ isRegister = true }) {
           FINAL<span className={classes.detail}>12</span>
         </h1>
 
-        <Tooltip title="Administrador">
-          <AccountCircle className={classes.btnPerson} onClick={handleMenu} />
-        </Tooltip>
+        {logoff && (
+          <>
+            <Tooltip title="Administrador">
+              <AccountCircle
+                className={classes.btnPerson}
+                onClick={handleMenu}
+              />
+            </Tooltip>
 
-        <Menu anchorEl={anchorEl} open={openMenu} onClose={handleClose}>
-          <MenuItem onClick={handleClose}>Sair</MenuItem>
-        </Menu>
+            <Menu anchorEl={anchorEl} open={openMenu} onClose={handleClose}>
+              <MenuItem onClick={handleClose}>Sair</MenuItem>
+            </Menu>
+          </>
+        )}
       </header>
 
       {isRegister && (
