@@ -32,4 +32,7 @@ export default makeStyles({
     marginLeft: "10px",
     cursor: "pointer",
   },
+  pagination: {
+    marginTop: "25px",
+  },
 });

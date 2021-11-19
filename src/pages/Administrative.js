@@ -10,6 +10,7 @@ import {
   Tooltip,
   Box,
   TextField,
+  Pagination,
 } from "@material-ui/core";
 
 import Header from "../components/Header";
@@ -77,6 +78,12 @@ function Administrative() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Pagination
+          count={10}
+          color="secondary"
+          className={classes.pagination}
+        />
       </section>
 
       <Footer />

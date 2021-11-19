@@ -46,7 +46,7 @@ function Row({ row, classes }) {
                     Período de Sobras
                   </TableCell>
                   <TableCell className={classes.detail}>
-                    Período de Público
+                    Período Público
                   </TableCell>
                   <TableCell className={classes.detail}>Preço + Taxa</TableCell>
                   <TableCell className={classes.detail}>
