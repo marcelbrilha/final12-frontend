@@ -8,8 +8,7 @@ export default makeStyles({
     marginBottom: "25px !important",
   },
   textField: {
-    width: "100%",
-    marginBottom: "20px !important",
+    marginTop: "30px !important",
   },
   btnCancel: {
     color: "#333 !important",
