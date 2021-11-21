@@ -35,7 +35,6 @@ function Register({ open, handleOpenClose }) {
 
   async function handleSubmit(data) {
     try {
-      console.log("data", data);
       formRef.current.setErrors({});
 
       const schema = Yup.object().shape({
