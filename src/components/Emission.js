@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { KeyboardArrowUp, KeyboardArrowDown, Search } from "@material-ui/icons";
+import * as moment from "moment";
 import {
   TableRow,
   TableCell,
@@ -12,9 +13,13 @@ import {
   Box,
   TextField,
   Tooltip,
+  Pagination,
+  CircularProgress,
 } from "@material-ui/core";
 
 import Style from "../styles/Emission";
+import { search } from "../services/emission";
+import { formatMoney } from "../utils/money";
 
 function Row({ row, classes }) {
   const [open, setOpen] = useState(false);
@@ -29,10 +34,13 @@ function Row({ row, classes }) {
         </TableCell>
         <TableCell>{row.fundo}</TableCell>
         <TableCell>{row.preco}</TableCell>
-        <TableCell>{row.cotacao}</TableCell>
         <TableCell>{row.dataBase}</TableCell>
-        <TableCell>{row.periodoNegociacao}</TableCell>
-        <TableCell>{row.periodoPreferencia}</TableCell>
+        <TableCell>
+          {row.periodoNegociacaoDe} - {row.periodoNegociacaoAte}
+        </TableCell>
+        <TableCell>
+          {row.periodoPreferenciaDe} - {row.periodoPreferenciaAte}
+        </TableCell>
         <TableCell>{row.etapa}</TableCell>
       </TableRow>
 
@@ -63,12 +71,18 @@ function Row({ row, classes }) {
 
               <TableBody>
                 <TableRow>
-                  <TableCell>{row.periodoSobras}</TableCell>
-                  <TableCell>{row.periodoPublico}</TableCell>
-                  <TableCell>{row.precoTaxa}</TableCell>
+                  <TableCell>
+                    {row.periodoSobrasDe} - {row.periodoSobrasAte}
+                  </TableCell>
+                  <TableCell>
+                    {row.periodoPublicoDe} - {row.periodoPublicoAte}
+                  </TableCell>
+                  <TableCell>
+                    {row.preco} + {row.taxa}
+                  </TableCell>
                   <TableCell>{row.proporcaoPreferencia}</TableCell>
                   <TableCell>{row.proporcaoSobras}</TableCell>
-                  <TableCell>{row.coordernadorLider}</TableCell>
+                  <TableCell>{row.coordenadorLider}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -79,33 +93,77 @@ function Row({ row, classes }) {
   );
 }
 
-function Emission() {
+function Emission({ etapa }) {
+  const fundRef = useRef();
   const classes = Style();
-  const [rows] = useState([
-    {
-      fundo: "PBBI11",
-      preco: "R$ 95,50",
-      cotacao: "R$ 87,84",
-      dataBase: "29/07/2021",
-      periodoNegociacao: "21/05 até 31/05",
-      periodoPreferencia: "21/05 até 02/06",
-      etapa: "Andamento",
-      periodoSobras: "21/05 até 02/06",
-      periodoPublico: "21/07 até 02/09",
-      precoTaxa: "Cota: R$ 95,38 + Taxa: R$ 0,12",
-      proporcaoPreferencia: "0,36089032921 (36,09%)",
-      proporcaoSobras: "25,7106403772 (2571,06%)",
-      coordernadorLider: "Itaú BBA",
-    },
-  ]);
+  const [rows, setRows] = useState([]);
+  const [totalPages, setTotalPages] = useState(null);
+  const [params, setParams] = useState({ etapa });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    function formatDate(date) {
+      if (!!date) {
+        return moment(date, "YYYY-MM-DD").format("DD/MM/YYYY");
+      }
+
+      return null;
+    }
+
+    async function load() {
+      setLoading(true);
+      const { data } = await search(params);
+
+      setRows([]);
+
+      if (!!data && data.content.length > 0) {
+        const subscriptions = data.content.map((curr) => ({
+          ...curr,
+          dataBase: formatDate(curr.dataBase),
+          periodoNegociacaoAte: formatDate(curr.periodoNegociacaoAte),
+          periodoNegociacaoDe: formatDate(curr.periodoNegociacaoDe),
+          periodoPreferenciaAte: formatDate(curr.periodoPreferenciaAte),
+          periodoPreferenciaDe: formatDate(curr.periodoPreferenciaDe),
+          periodoPublicoAte: formatDate(curr.periodoPublicoAte),
+          periodoPublicoDe: formatDate(curr.periodoPublicoDe),
+          periodoSobrasAte: formatDate(curr.periodoSobrasAte),
+          periodoSobrasDe: formatDate(curr.periodoSobrasDe),
+          preco: formatMoney(curr.preco),
+          taxa: formatMoney(curr.taxa),
+        }));
+
+        setRows(subscriptions);
+        setTotalPages(data.totalPages);
+      }
+
+      setLoading(false);
+    }
+
+    load();
+  }, [params]);
+
+  function searchFund() {
+    const value = fundRef.current.value;
+    const fundo = String(value).toLocaleUpperCase();
+    setParams({ ...params, fundo });
+  }
+
+  function paginate(event, page) {
+    const currPage = page - 1;
+    setParams({ ...params, page: currPage });
+  }
 
   return (
-    <>
+    <section className={classes.container}>
       <Box className={classes.containerSearch}>
-        <TextField label="Pesquisar Fundo" variant="standard" />
+        <TextField
+          label="Pesquisar Fundo"
+          variant="standard"
+          inputRef={fundRef}
+        />
 
         <Tooltip title="Pesquisar Fundo">
-          <Search className={classes.iconSearch} />
+          <Search className={classes.iconSearch} onClick={searchFund} />
         </Tooltip>
       </Box>
 
@@ -116,7 +174,6 @@ function Emission() {
               <TableCell />
               <TableCell>Fundo</TableCell>
               <TableCell>Preço</TableCell>
-              <TableCell>Cotação</TableCell>
               <TableCell>Data Base</TableCell>
               <TableCell>Período de Negociação</TableCell>
               <TableCell>Período de Preferência</TableCell>
@@ -124,14 +181,45 @@ function Emission() {
             </TableRow>
           </TableHead>
 
-          <TableBody>
-            {rows.map((row) => (
-              <Row key={row.fundo} row={row} classes={classes} />
-            ))}
-          </TableBody>
+          {!!rows && rows.length > 0 && !loading && (
+            <TableBody>
+              {rows.map((row) => (
+                <Row key={row.fundo} row={row} classes={classes} />
+              ))}
+            </TableBody>
+          )}
+
+          {!loading && (!rows || rows.length === 0) && (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  Sem registros
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          )}
+
+          {!!loading && (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  <CircularProgress color="inherit" />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
-    </>
+
+      {!!totalPages && totalPages !== 1 && (
+        <Pagination
+          count={totalPages}
+          color="secondary"
+          className={classes.pagination}
+          onChange={paginate}
+        />
+      )}
+    </section>
   );
 }
 

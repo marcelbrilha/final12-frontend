@@ -38,11 +38,11 @@ function Subscription() {
       </Tabs>
 
       <TabPanel value={value} classes={classes} index="one">
-        <Emission />
+        <Emission etapa={1} />
       </TabPanel>
 
       <TabPanel value={value} classes={classes} index="two">
-        <Emission />
+        <Emission etapa={2} />
       </TabPanel>
     </section>
   );
