@@ -17,7 +17,9 @@ function Login() {
       formRef.current.setErrors({});
 
       const schema = Yup.object().shape({
-        usuario: Yup.string().required("Usuário é obrigatório"),
+        email: Yup.string()
+          .email("E-mail inválido")
+          .required("E-mail é obrigatório"),
         senha: Yup.string()
           .min(6, "Senha deve ter mais que 5 caracteres")
           .required("Senha é obrigatória"),
@@ -44,7 +46,7 @@ function Login() {
       <Heading title="ENTRAR" />
 
       <Form className={classes.form} ref={formRef} onSubmit={handleSubmit}>
-        <TextField label="Usuário" variant="outlined" name="usuario" />
+        <TextField label="E-mail" variant="outlined" name="email" />
         <TextField
           type="password"
           label="Senha"
