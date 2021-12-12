@@ -1,6 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Form } from "@unform/web";
-import { Grid, Button } from "@material-ui/core";
+import { Grid, Button, CircularProgress } from "@material-ui/core";
+import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
 import * as Yup from "yup";
 
 import Header from "../components/Header";
@@ -10,24 +12,55 @@ import Style from "../styles/CreateUpdate";
 import TextField from "../components/form/Textfield";
 import Select from "../components/form/Select";
 import InputMoney from "../components/form/InputMoney";
+import { create } from "../services/subscription";
+import stageService from "../services/stage";
+import { parseMoney } from "../utils/money";
 
 function CreateUpdate() {
+  const navigate = useNavigate();
   const formRef = useRef(null);
   const classes = Style();
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const options = [
-    {
-      label: "Andamento",
-      value: "andamento",
-    },
-    {
-      label: "Encerrado",
-      value: "encerrado",
-    },
-  ];
+  useEffect(() => {
+    async function loadStage() {
+      const { data: stages } = await stageService();
+      const stagesMapped = stages.map(({ id, descricao }) => ({
+        label: descricao,
+        value: id,
+      }));
+
+      setOptions(stagesMapped);
+    }
+
+    loadStage();
+  }, []);
+
+  function mapData(data) {
+    const response = {};
+    const keysFormat = [
+      "preco",
+      "taxa",
+      "proporcaoPreferencia",
+      "proporcaoSobras",
+    ];
+
+    Object.keys(data).forEach((key) => {
+      if (keysFormat.includes(key)) {
+        response[key] = parseMoney(data[key]);
+      } else {
+        response[key] = data[key];
+      }
+    });
+
+    return response;
+  }
 
   async function handleSubmit(data) {
     try {
+      setLoading(true);
+
       formRef.current.setErrors({});
 
       const schema = Yup.object().shape({
@@ -42,8 +75,8 @@ function CreateUpdate() {
         etapa: Yup.string().required("Campo é obrigatório"),
         periodoNegociacaoDe: Yup.string().required("Campo é obrigatório"),
         periodoNegociacaoAte: Yup.string().required("Campo é obrigatório"),
-        PeriodoPreferenciaDe: Yup.string().required("Campo é obrigatório"),
-        PeriodoPreferenciaAte: Yup.string().required("Campo é obrigatório"),
+        periodoPreferenciaDe: Yup.string().required("Campo é obrigatório"),
+        periodoPreferenciaAte: Yup.string().required("Campo é obrigatório"),
         periodoSobrasDe: Yup.string().required("Campo é obrigatório"),
         periodoSobrasAte: Yup.string().required("Campo é obrigatório"),
         periodoPublicoDe: Yup.string().required("Campo é obrigatório"),
@@ -51,8 +84,11 @@ function CreateUpdate() {
       });
 
       await schema.validate(data, { abortEarly: false });
+      const body = mapData(data);
+      await create(body);
 
-      console.log(data);
+      formRef.current.reset();
+      swal("Subscrição Criada", "Subscrição criada com sucesso", "success");
     } catch (err) {
       const validationErrors = {};
 
@@ -62,7 +98,11 @@ function CreateUpdate() {
         });
 
         formRef.current.setErrors(validationErrors);
+      } else {
+        swal("Erro", "Ocorreu um erro ao realizar operação", "error");
       }
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -113,17 +153,19 @@ function CreateUpdate() {
               />
             </Grid>
             <Grid item xs={12} sm={4} md={4}>
-              <TextField
+              <InputMoney
                 fullWidth
                 label="Proporção Preferência"
                 name="proporcaoPreferencia"
+                prefix=""
               />
             </Grid>
             <Grid item xs={12} sm={4} md={4}>
-              <TextField
+              <InputMoney
                 fullWidth
                 label="Proporção Sobras"
                 name="proporcaoSobras"
+                prefix=""
               />
             </Grid>
           </Grid>
@@ -186,7 +228,7 @@ function CreateUpdate() {
                 type="date"
                 fullWidth
                 label="Período Preferência - De"
-                name="PeriodoPreferenciaDe"
+                name="periodoPreferenciaDe"
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -207,7 +249,7 @@ function CreateUpdate() {
                 type="date"
                 fullWidth
                 label="Período Preferência - Até"
-                name="PeriodoPreferenciaAte"
+                name="periodoPreferenciaAte"
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -270,7 +312,12 @@ function CreateUpdate() {
           </Grid>
 
           <footer className={classes.containerButtons}>
-            <Button variant="outlined" className={classes.buttons}>
+            <Button
+              variant="outlined"
+              className={classes.buttons}
+              disabled={loading}
+              onClick={() => navigate("/adm")}
+            >
               CANCELAR
             </Button>
 
@@ -279,8 +326,10 @@ function CreateUpdate() {
               color="secondary"
               type="submit"
               className={classes.buttons}
+              disabled={loading}
             >
-              SALVAR
+              {!loading && <>SALVAR</>}
+              {loading && <CircularProgress color="inherit" />}
             </Button>
           </footer>
         </Form>

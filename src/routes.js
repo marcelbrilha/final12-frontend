@@ -4,10 +4,10 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Administrative from "./pages/Administrative";
 import CreateUpdate from "./pages/CreateUpdate";
-import loginService from "./services/login";
+import { isAuthorized } from "./services/login";
 
 function PrivateRoute({ children }) {
-  const auth = loginService.isAuthorized();
+  const auth = isAuthorized();
   return auth ? children : <Navigate to="/login" />;
 }
 

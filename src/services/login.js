@@ -1,7 +1,7 @@
 import api from "./api";
 import qs from "querystring";
 
-function login({ email: username, senha: password }) {
+export function login({ email: username, senha: password }) {
   const client = process.env.REACT_APP_CLIENT;
   const secret = process.env.REACT_APP_SECRET;
   const basic = btoa(`${client}:${secret}`);
@@ -22,10 +22,7 @@ function login({ email: username, senha: password }) {
   });
 }
 
-function isAuthorized() {
+export function isAuthorized() {
   const token = sessionStorage.getItem("token");
   return !!token;
 }
-
-const exportFunctions = { login, isAuthorized };
-export default exportFunctions;

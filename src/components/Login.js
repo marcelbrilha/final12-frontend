@@ -6,7 +6,7 @@ import TextField from "./form/Textfield";
 import * as Yup from "yup";
 import swal from "sweetalert";
 
-import loginService from "../services/login";
+import { login } from "../services/login";
 import Heading from "./Heading";
 import Style from "../styles/Login";
 
@@ -31,7 +31,7 @@ function Login() {
       });
 
       await schema.validate(data, { abortEarly: false });
-      const response = await loginService.login(data);
+      const response = await login(data);
       sessionStorage.setItem("token", response.data.access_token);
 
       setLoading(false);

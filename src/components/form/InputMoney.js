@@ -4,11 +4,11 @@ import { FormHelperText, TextField } from "@material-ui/core";
 import MaskedInput from "react-text-mask";
 import createNumberMask from "text-mask-addons/dist/createNumberMask";
 
-export default function InputMoney({ name, ...rest }) {
+export default function InputMoney({ name, prefix = "R$ ", ...rest }) {
   const inputRef = useRef(null);
   const { fieldName, registerField, defaultValue, error } = useField(name);
   const defaultMaskOptions = {
-    prefix: "R$ ",
+    prefix,
     suffix: "",
     includeThousandsSeparator: true,
     thousandsSeparatorSymbol: ".",
