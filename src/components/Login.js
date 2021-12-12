@@ -1,19 +1,24 @@
-import { useRef } from "react";
-import { Button } from "@material-ui/core";
+import { useRef, useState } from "react";
+import { Button, CircularProgress } from "@material-ui/core";
 import { Form } from "@unform/web";
-import * as Yup from "yup";
-
+import { useNavigate } from "react-router-dom";
 import TextField from "./form/Textfield";
+import * as Yup from "yup";
+import swal from "sweetalert";
 
+import loginService from "../services/login";
 import Heading from "./Heading";
 import Style from "../styles/Login";
 
 function Login() {
+  const navigate = useNavigate();
   const formRef = useRef(null);
   const classes = Style();
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(data) {
     try {
+      setLoading(true);
       formRef.current.setErrors({});
 
       const schema = Yup.object().shape({
@@ -26,8 +31,11 @@ function Login() {
       });
 
       await schema.validate(data, { abortEarly: false });
+      const response = await loginService(data);
+      sessionStorage.setItem("token", response.data.access_token);
 
-      console.log(data);
+      setLoading(false);
+      navigate("/adm");
     } catch (err) {
       const validationErrors = {};
 
@@ -37,7 +45,11 @@ function Login() {
         });
 
         formRef.current.setErrors(validationErrors);
+      } else {
+        swal("Acesso Negado", "Usuário ou senha inválidos", "error");
       }
+
+      setLoading(false);
     }
   }
 
@@ -59,8 +71,10 @@ function Login() {
           variant="contained"
           color="secondary"
           className={classes.button}
+          disabled={loading}
         >
-          ACESSAR
+          {!loading && <>ACESSAR</>}
+          {loading && <CircularProgress color="inherit" />}
         </Button>
       </Form>
     </section>

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Button, Tooltip, Menu, MenuItem } from "@material-ui/core";
 import { AccountCircle } from "@material-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 import Register from "./Register";
 import Style from "../styles/Header";
 
 function Header({ isRegister = true, logoff = false }) {
+  const navigate = useNavigate();
   const classes = Style();
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -18,6 +20,12 @@ function Header({ isRegister = true, logoff = false }) {
 
   function handleClose() {
     setAnchorEl(null);
+  }
+
+  function exit() {
+    handleClose();
+    sessionStorage.removeItem("token");
+    navigate("/login");
   }
 
   function handleOpenCloseRegister(openClose) {
@@ -43,7 +51,7 @@ function Header({ isRegister = true, logoff = false }) {
             </Tooltip>
 
             <Menu anchorEl={anchorEl} open={openMenu} onClose={handleClose}>
-              <MenuItem onClick={handleClose}>Sair</MenuItem>
+              <MenuItem onClick={exit}>Sair</MenuItem>
             </Menu>
           </>
         )}
