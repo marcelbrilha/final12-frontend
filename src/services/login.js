@@ -22,4 +22,10 @@ function login({ email: username, senha: password }) {
   });
 }
 
-export default login;
+function isAuthorized() {
+  const token = sessionStorage.getItem("token");
+  return !!token;
+}
+
+const exportFunctions = { login, isAuthorized };
+export default exportFunctions;

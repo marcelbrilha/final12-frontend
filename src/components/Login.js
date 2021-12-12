@@ -31,7 +31,7 @@ function Login() {
       });
 
       await schema.validate(data, { abortEarly: false });
-      const response = await loginService(data);
+      const response = await loginService.login(data);
       sessionStorage.setItem("token", response.data.access_token);
 
       setLoading(false);
