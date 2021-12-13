@@ -145,7 +145,7 @@ function Emission({ etapa }) {
   function searchFund() {
     const value = fundRef.current.value;
     const fundo = String(value).toLocaleUpperCase();
-    setParams({ ...params, fundo });
+    setParams({ etapa, fundo });
   }
 
   function paginate(event, page) {
