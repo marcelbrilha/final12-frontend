@@ -40,7 +40,7 @@ function Administrative() {
         setSubscriptions(data.content);
         setTotalPages(data.totalPages);
       } catch (error) {
-        swal("Error", "Ocorreu um erro ao carregar as informações", "error");
+        swal("Erro", "Ocorreu um erro ao carregar as informações", "error");
       } finally {
         setLoading(false);
       }

@@ -19,4 +19,19 @@ api.interceptors.request.use(
   }
 );
 
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (!error.response.config.url.endsWith("token")) {
+      if (error.response.status === 401) {
+        sessionStorage.removeItem("token");
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default api;
