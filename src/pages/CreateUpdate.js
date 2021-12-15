@@ -157,7 +157,7 @@ function CreateUpdate() {
       <Header isRegister={false} logoff={true} />
 
       <section className={classes.container}>
-        <Heading title={!!isUpdate ? "ATUALIZAR" : "CRIAR"} />
+        <Heading title={!!isUpdate ? "EDITAR" : "CRIAR"} />
 
         <Form className={classes.form} ref={formRef} onSubmit={handleSubmit}>
           <Grid
@@ -411,7 +411,7 @@ function CreateUpdate() {
               className={classes.buttons}
               disabled={loading}
             >
-              {!loading && <>{!!isUpdate ? "ATUALIZAR" : "SALVAR"}</>}
+              {!loading && <>{!!isUpdate ? "EDITAR" : "SALVAR"}</>}
               {loading && <CircularProgress color="inherit" />}
             </Button>
           </footer>
