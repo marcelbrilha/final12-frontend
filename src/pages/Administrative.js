@@ -83,6 +83,12 @@ function Administrative() {
     }
   }
 
+  function update(id) {
+    const idAndSalt = `${process.env.REACT_APP_SALT}${id}`;
+    const state = btoa(idAndSalt);
+    navigate("/subscription", { state });
+  }
+
   return (
     <>
       <Header isRegister={false} logoff={true} />
@@ -130,7 +136,10 @@ function Administrative() {
                   <TableRow key={`subscription-${index}`}>
                     <TableCell>
                       <Tooltip title="Editar">
-                        <IconButton size="small">
+                        <IconButton
+                          size="small"
+                          onClick={() => update(subscription.id)}
+                        >
                           <Edit />
                         </IconButton>
                       </Tooltip>

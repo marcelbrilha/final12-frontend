@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Form } from "@unform/web";
 import { Grid, Button, CircularProgress } from "@material-ui/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import swal from "sweetalert";
 import * as Yup from "yup";
 
@@ -12,16 +12,19 @@ import Style from "../styles/CreateUpdate";
 import TextField from "../components/form/Textfield";
 import Select from "../components/form/Select";
 import InputMoney from "../components/form/InputMoney";
-import { create } from "../services/subscription";
 import stageService from "../services/stage";
 import { parseMoney } from "../utils/money";
+import { create, update, findOneSubscription } from "../services/subscription";
 
 function CreateUpdate() {
+  const { state } = useLocation();
   const navigate = useNavigate();
   const formRef = useRef(null);
   const classes = Style();
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [idUpdate, setIdUpdate] = useState(null);
 
   useEffect(() => {
     async function loadStage() {
@@ -36,6 +39,40 @@ function CreateUpdate() {
 
     loadStage();
   }, []);
+
+  useEffect(() => {
+    async function loadSubscription(base64) {
+      setIsUpdate(true);
+
+      try {
+        const idAndSalt = atob(base64);
+        const id = idAndSalt.replace(process.env.REACT_APP_SALT, "");
+        const { data } = await findOneSubscription(id);
+
+        if (!!data) {
+          setIdUpdate(data.id);
+          formRef.current.setData({
+            ...data,
+            etapa: +data.etapa.id,
+            proporcaoSobras: String(data.proporcaoSobras).replaceAll(".", ","),
+            preco: String(data.preco).replaceAll(".", ","),
+            taxa: String(data.preco).replaceAll(".", ","),
+            proporcaoPreferencia: String(data.proporcaoPreferencia).replaceAll(
+              ".",
+              ","
+            ),
+          });
+        }
+      } catch (error) {
+        swal("Erro", "Ocorreu um erro ao carregar informações", "error");
+        console.log(
+          `Ocorreu um erro ao carregar informações: ${error.message}`
+        );
+      }
+    }
+
+    if (!!state) loadSubscription(state);
+  }, [state]);
 
   function mapData(data) {
     const response = {};
@@ -85,10 +122,19 @@ function CreateUpdate() {
 
       await schema.validate(data, { abortEarly: false });
       const body = mapData(data);
-      await create(body);
 
-      formRef.current.reset();
-      swal("Subscrição Criada", "Subscrição criada com sucesso", "success");
+      if (!isUpdate) {
+        await create(body);
+        formRef.current.reset();
+        swal("Subscrição Criada", "Subscrição criada com sucesso", "success");
+      } else {
+        await update(body, idUpdate);
+        swal(
+          "Subscrição Atualizada",
+          "Subscrição atualizada com sucesso",
+          "success"
+        );
+      }
     } catch (err) {
       const validationErrors = {};
 
@@ -111,7 +157,7 @@ function CreateUpdate() {
       <Header isRegister={false} logoff={true} />
 
       <section className={classes.container}>
-        <Heading title="CRIAR" />
+        <Heading title={!!isUpdate ? "ATUALIZAR" : "CRIAR"} />
 
         <Form className={classes.form} ref={formRef} onSubmit={handleSubmit}>
           <Grid
@@ -123,13 +169,34 @@ function CreateUpdate() {
             className={classes.content}
           >
             <Grid item xs={12} sm={4} md={4}>
-              <TextField fullWidth label="Fundo" name="fundo" />
+              <TextField
+                fullWidth
+                label="Fundo"
+                name="fundo"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </Grid>
             <Grid item xs={12} sm={4} md={4}>
-              <InputMoney fullWidth label="Preço" name="preco" />
+              <InputMoney
+                fullWidth
+                label="Preço"
+                name="preco"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </Grid>
             <Grid item xs={12} sm={4} md={4}>
-              <InputMoney fullWidth label="Taxa" name="taxa" />
+              <InputMoney
+                fullWidth
+                label="Taxa"
+                name="taxa"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </Grid>
           </Grid>
 
@@ -158,6 +225,9 @@ function CreateUpdate() {
                 label="Proporção Preferência"
                 name="proporcaoPreferencia"
                 prefix=""
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={4} md={4}>
@@ -166,6 +236,9 @@ function CreateUpdate() {
                 label="Proporção Sobras"
                 name="proporcaoSobras"
                 prefix=""
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
           </Grid>
@@ -183,10 +256,20 @@ function CreateUpdate() {
                 fullWidth
                 label="Coordenador Líder"
                 name="coordenadorLider"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={4} md={4}>
-              <TextField fullWidth label="Emissão" name="emissao" />
+              <TextField
+                fullWidth
+                label="Emissão"
+                name="emissao"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </Grid>
             <Grid item xs={12} sm={4} md={4}>
               <Select label="Etapa" fullWidth options={options} name="etapa" />
@@ -318,7 +401,7 @@ function CreateUpdate() {
               disabled={loading}
               onClick={() => navigate("/adm")}
             >
-              CANCELAR
+              VOLTAR
             </Button>
 
             <Button
@@ -328,7 +411,7 @@ function CreateUpdate() {
               className={classes.buttons}
               disabled={loading}
             >
-              {!loading && <>SALVAR</>}
+              {!loading && <>{!!isUpdate ? "ATUALIZAR" : "SALVAR"}</>}
               {loading && <CircularProgress color="inherit" />}
             </Button>
           </footer>

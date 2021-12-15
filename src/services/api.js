@@ -4,7 +4,7 @@ const api = axios.create({ baseURL: process.env.REACT_APP_HOST });
 
 api.interceptors.request.use(
   (config) => {
-    if (!config.url.endsWith("token")) {
+    if (!!config && !!config.url && !config.url.endsWith("token")) {
       const token = sessionStorage.getItem("token");
 
       if (!!token) {
@@ -24,7 +24,7 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (!error.response.config.url.endsWith("token")) {
+    if (!!error.response && !error.response.config.url.endsWith("token")) {
       if (error.response.status === 401) {
         sessionStorage.removeItem("token");
       }

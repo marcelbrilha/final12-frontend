@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { KeyboardArrowUp, KeyboardArrowDown, Search } from "@material-ui/icons";
 import * as moment from "moment";
+import swal from "sweetalert";
 import {
   TableRow,
   TableCell,
@@ -111,32 +112,37 @@ function Emission({ etapa }) {
     }
 
     async function load() {
-      setLoading(true);
-      const { data } = await search(params);
+      try {
+        setLoading(true);
+        const { data } = await search(params);
 
-      setRows([]);
+        setRows([]);
 
-      if (!!data && data.content.length > 0) {
-        const subscriptions = data.content.map((curr) => ({
-          ...curr,
-          dataBase: formatDate(curr.dataBase),
-          periodoNegociacaoAte: formatDate(curr.periodoNegociacaoAte),
-          periodoNegociacaoDe: formatDate(curr.periodoNegociacaoDe),
-          periodoPreferenciaAte: formatDate(curr.periodoPreferenciaAte),
-          periodoPreferenciaDe: formatDate(curr.periodoPreferenciaDe),
-          periodoPublicoAte: formatDate(curr.periodoPublicoAte),
-          periodoPublicoDe: formatDate(curr.periodoPublicoDe),
-          periodoSobrasAte: formatDate(curr.periodoSobrasAte),
-          periodoSobrasDe: formatDate(curr.periodoSobrasDe),
-          preco: formatMoney(curr.preco),
-          taxa: formatMoney(curr.taxa),
-        }));
+        if (!!data && data.content.length > 0) {
+          const subscriptions = data.content.map((curr) => ({
+            ...curr,
+            dataBase: formatDate(curr.dataBase),
+            periodoNegociacaoAte: formatDate(curr.periodoNegociacaoAte),
+            periodoNegociacaoDe: formatDate(curr.periodoNegociacaoDe),
+            periodoPreferenciaAte: formatDate(curr.periodoPreferenciaAte),
+            periodoPreferenciaDe: formatDate(curr.periodoPreferenciaDe),
+            periodoPublicoAte: formatDate(curr.periodoPublicoAte),
+            periodoPublicoDe: formatDate(curr.periodoPublicoDe),
+            periodoSobrasAte: formatDate(curr.periodoSobrasAte),
+            periodoSobrasDe: formatDate(curr.periodoSobrasDe),
+            preco: formatMoney(curr.preco),
+            taxa: formatMoney(curr.taxa),
+          }));
 
-        setRows(subscriptions);
-        setTotalPages(data.totalPages);
+          setRows(subscriptions);
+          setTotalPages(data.totalPages);
+        }
+      } catch (error) {
+        console.log(`Ocorreu um erro ao carregar emissões: ${error.message}`);
+        swal("Erro", "Ocorreu um erro ao carregar emissões", "error");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     }
 
     load();
