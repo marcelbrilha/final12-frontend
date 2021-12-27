@@ -7,6 +7,7 @@ import {
   DialogContentText,
   Button,
   DialogActions,
+  Alert,
 } from "@material-ui/core";
 import * as Yup from "yup";
 
@@ -30,6 +31,14 @@ function Register({ open, handleOpenClose }) {
     {
       label: "KNRI11",
       value: "KNRI11",
+    },
+    {
+      label: "HGLG11",
+      value: "HGLG11",
+    },
+    {
+      label: "HGRU11",
+      value: "HGRU11",
     },
   ]);
 
@@ -66,7 +75,14 @@ function Register({ open, handleOpenClose }) {
 
       <DialogContent>
         <DialogContentText className={classes.message}>
-          Preencha os fundos imobiliários que você deseja receber a notificação
+          <span className={classes.messageSpan}>
+            Preencha os fundos imobiliários que você deseja receber a
+            notificação
+          </span>
+
+          <Alert severity="info" className="mt-2">
+            Funcionalidade em DESENVOLVIMENTO
+          </Alert>
         </DialogContentText>
 
         <Form className={classes.form} ref={formRef} onSubmit={handleSubmit}>

@@ -7,6 +7,10 @@ export default makeStyles({
   message: {
     marginBottom: "25px !important",
   },
+  messageSpan: {
+    display: "block",
+    marginBottom: "15px",
+  },
   textField: {
     marginTop: "30px !important",
   },
